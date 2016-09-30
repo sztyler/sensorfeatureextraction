@@ -1,7 +1,14 @@
 package de.unima.ar.collector.features;
 
-public class Config
-{
+
+/**
+ * Default parameter. They have to be modified befor the initialization of a classifier. Changing the parameter
+ * afterwards might result in side effects.
+ *
+ * @author Timo Sztyler
+ * @version 30.09.2016
+ */
+public class Config {
     // Window Manager
     public static long    WINDOW_SIZE           = 1000;     // milliseconds
     public static boolean WINDOW_OVERLAP        = true;

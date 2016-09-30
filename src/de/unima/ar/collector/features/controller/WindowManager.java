@@ -9,7 +9,12 @@ import de.unima.ar.collector.features.model.Attribute;
 import de.unima.ar.collector.features.model.Sensor;
 import de.unima.ar.collector.features.model.Window;
 
-
+/**
+ * Window Manager. This class takes care of all created windows but also the creation and storing of new windows.
+ *
+ * @author Timo Sztyler
+ * @version 30.09.2016
+ */
 public class WindowManager implements Runnable
 {
     private long    timeStamp;

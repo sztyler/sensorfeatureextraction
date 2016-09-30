@@ -1,50 +1,52 @@
 package de.unima.ar.collector.features.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.unima.ar.collector.features.Config;
 import de.unima.ar.collector.features.Utils;
 import de.unima.ar.collector.features.model.SensorData;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class AttributeManager implements Runnable
-{
+/**
+ * This class takes care of parsing the sensor data. The attribute manager is started by SCSystem and gets the data
+ * which has to be processed from the data center. Processed data is pushed back to the data center.
+ *
+ * @author Timo Sztyler
+ * @version 30.09.2016
+ */
+public class AttributeManager implements Runnable {
     private long    timeStamp;
     private boolean isRunning;
     private int     alreadyRead;
 
 
-    public AttributeManager()
-    {
+    public AttributeManager() {
         this.timeStamp = 0;
         this.isRunning = true;
         this.alreadyRead = 0;
     }
 
 
-    public void shutdown()
-    {
+    public void shutdown() {
         this.isRunning = false;
     }
 
 
-    private void parse()
-    {
+    private void parse() {
         DataCenter dc = DataCenter.getInstance();
 
-        while(this.isRunning) {
+        while (this.isRunning) {
             long tmpTime = dc.getRawDataLastModified();
 
             // verify last modification
-            if(this.timeStamp >= tmpTime) { // TODO SLEEP NOTIFY
+            if (this.timeStamp >= tmpTime) { // TODO SLEEP NOTIFY
                 Utils.sleep(Config.MANAGER_ATTRIBUTE_IDLE);
                 continue;
             }
             this.timeStamp = tmpTime;
 
             // load data
-            List<SensorData> tmp = dc.getRawData();
+            List<SensorData> tmp  = dc.getRawData();
             List<SensorData> copy = new ArrayList<>(tmp);   // TODO real copy necessary????
             copy = tmp.subList(alreadyRead, tmp.size());
 
@@ -61,13 +63,12 @@ public class AttributeManager implements Runnable
     }
 
 
-    private void parse(List<SensorData> data)
-    {
+    private void parse(List<SensorData> data) {
         DataCenter dc = DataCenter.getInstance();
 
-        for(SensorData sd : data) {
+        for (SensorData sd : data) {
             float[] values = sd.getValues();
-            for(int i = 0; i < values.length; i++) {
+            for (int i = 0; i < values.length; i++) {
                 dc.addAttribute(sd.getSensor(), String.valueOf(i), sd.getTimestamp(), values[i]);
             }
 
@@ -78,8 +79,7 @@ public class AttributeManager implements Runnable
 
 
     @Override
-    public void run()
-    {
+    public void run() {
         this.parse();
     }
 }

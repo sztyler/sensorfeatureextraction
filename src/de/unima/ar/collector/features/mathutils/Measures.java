@@ -1,17 +1,17 @@
 package de.unima.ar.collector.features.mathutils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.jtransforms.fft.DoubleFFT_1D;
-
 import de.unima.ar.collector.features.Config;
 import de.unima.ar.collector.features.Utils;
+import org.jtransforms.fft.DoubleFFT_1D;
 
+import java.util.*;
 
+/**
+ * This class covers all function that are necessary to compute the individual features for each window.
+ *
+ * @author Timo Sztyler
+ * @version 30.09.2016
+ */
 public class Measures
 {
     // time-domain

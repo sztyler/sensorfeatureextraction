@@ -2,18 +2,23 @@ package de.unima.ar.collector.features.model;
 
 import java.util.Arrays;
 
-
-public class Action
-{
-    public static enum TYPE {
+/**
+ * This container stores context related information of a specific window, i.e., which activity was performed, where
+ * the wearable device is located.
+ *
+ * @author Timo Sztyler
+ * @version 30.09.2016
+ */
+public class Action {
+    public enum TYPE {
         DEVICEPOSITIONS, HUMANACTIVITIES, HUMANPOSITIONS, HUMANPOSTURES;
     }
 
-    public static enum DEVICEPOSITIONS {
+    public enum DEVICEPOSITIONS {
         CHEST, FOREARM, HEAD, SHIN, THIGH, UPPERARM, WAIST;
     }
 
-    public static enum HUMANPOSTURES {
+    public enum HUMANPOSTURES {
         CLIMBINGDOWN, CLIMBINGUP, JUMPING, LYING, RUNNING, SITTING, STANDING, WALKING;
     }
 
@@ -25,8 +30,7 @@ public class Action
     private String          humanActvitiy;
 
 
-    public Action()
-    {
+    public Action() {
         this.devicePosition = null;
         this.humanPosture = null;
         this.humanPosition = "unknown";
@@ -34,79 +38,73 @@ public class Action
     }
 
 
-    public DEVICEPOSITIONS getDevicePosition()
-    {
+    public DEVICEPOSITIONS getDevicePosition() {
         return devicePosition;
     }
 
 
-    public HUMANPOSTURES getHumanPosture()
-    {
+    public HUMANPOSTURES getHumanPosture() {
         return this.humanPosture;
     }
 
 
-    public String getHumanPosition()
-    {
+    public String getHumanPosition() {
         return this.humanPosition;
     }
 
 
-    public String getHumanActvitiy()
-    {
+    public String getHumanActvitiy() {
         return this.humanActvitiy;
     }
 
 
-    public long getTime()
-    {
+    public long getTime() {
         return this.time;
     }
 
 
-    public String getFormatedStringValues(Action.TYPE targetClass)
-    {
+    public String getFormatedStringValues(Action.TYPE targetClass) {
         StringBuilder sb = new StringBuilder();
 
-        for(Action.TYPE type : Action.TYPE.values()) {
-            if(type.equals(targetClass)) {
+        for (Action.TYPE type : Action.TYPE.values()) {
+            if (type.equals(targetClass)) {
                 continue;
             }
 
-            if(Action.TYPE.DEVICEPOSITIONS.equals(type)) {
-                sb.append(getDevicePosition().toString().toLowerCase() + ",");
+            if (Action.TYPE.DEVICEPOSITIONS.equals(type)) {
+                sb.append(getDevicePosition().toString().toLowerCase()).append(",");
             }
 
-            if(Action.TYPE.HUMANACTIVITIES.equals(type)) {
-                sb.append(getHumanActvitiy().toLowerCase() + ",");
+            if (Action.TYPE.HUMANACTIVITIES.equals(type)) {
+                sb.append(getHumanActvitiy().toLowerCase()).append(",");
             }
 
-            if(Action.TYPE.HUMANPOSITIONS.equals(type)) {
-                sb.append(getHumanPosition().toLowerCase() + ",");
+            if (Action.TYPE.HUMANPOSITIONS.equals(type)) {
+                sb.append(getHumanPosition().toLowerCase()).append(",");
             }
 
-            if(Action.TYPE.HUMANPOSTURES.equals(type)) {
-                sb.append(getHumanPosture().toString().toLowerCase() + ",");
+            if (Action.TYPE.HUMANPOSTURES.equals(type)) {
+                sb.append(getHumanPosture().toString().toLowerCase()).append(",");
             }
         }
 
-        if(Action.TYPE.DEVICEPOSITIONS.equals(targetClass)) {
+        if (Action.TYPE.DEVICEPOSITIONS.equals(targetClass)) {
             sb.append(getDevicePosition().toString().toLowerCase());
         }
 
-        if(Action.TYPE.HUMANACTIVITIES.equals(targetClass)) {
+        if (Action.TYPE.HUMANACTIVITIES.equals(targetClass)) {
             sb.append(getHumanActvitiy().toLowerCase());
         }
 
-        if(Action.TYPE.HUMANPOSITIONS.equals(targetClass)) {
+        if (Action.TYPE.HUMANPOSITIONS.equals(targetClass)) {
             sb.append(getHumanPosition().toLowerCase());
         }
 
-        if(Action.TYPE.HUMANPOSTURES.equals(targetClass)) {
+        if (Action.TYPE.HUMANPOSTURES.equals(targetClass)) {
             sb.append(getHumanPosture().toString().toLowerCase());
         }
 
-        if(targetClass == null) {
+        if (targetClass == null) {
             sb.delete(sb.length() - 1, sb.length());
         }
 
@@ -114,57 +112,51 @@ public class Action
     }
 
 
-    public void setHumanPosture(HUMANPOSTURES humanPosture)
-    {
-        if(humanPosture == null) { return; }
+    public void setHumanPosture(HUMANPOSTURES humanPosture) {
+        if (humanPosture == null) { return; }
 
         this.humanPosture = humanPosture;
     }
 
 
-    public void setHumanPosition(String humanPosition)
-    {
-        if(humanPosition == null) { return; }
+    public void setHumanPosition(String humanPosition) {
+        if (humanPosition == null) { return; }
 
         this.humanPosition = humanPosition.toLowerCase();
     }
 
 
-    public void setHumanActvitiy(String humanActvitiy)
-    {
-        if(humanActvitiy == null) { return; }
+    public void setHumanActvitiy(String humanActvitiy) {
+        if (humanActvitiy == null) { return; }
 
         this.humanActvitiy = humanActvitiy.toLowerCase();
     }
 
 
-    public void setDevicePosition(DEVICEPOSITIONS devicePosition)
-    {
-        if(devicePosition == null) { return; }
+    public void setDevicePosition(DEVICEPOSITIONS devicePosition) {
+        if (devicePosition == null) { return; }
 
         this.devicePosition = devicePosition;
     }
 
 
-    public long setTime(long time)
-    {
+    public long setTime(long time) {
         return this.time = time;
     }
 
 
-    public static String getFormatedStringType(Action.TYPE targetClass)
-    {
+    public static String getFormatedStringType(Action.TYPE targetClass) {
         StringBuilder sb = new StringBuilder();
 
-        for(Action.TYPE type : Action.TYPE.values()) {
-            if(type.equals(targetClass)) {
+        for (Action.TYPE type : Action.TYPE.values()) {
+            if (type.equals(targetClass)) {
                 continue;
             }
 
-            sb.append(type.toString().toLowerCase() + ",");
+            sb.append(type.toString().toLowerCase()).append(",");
         }
 
-        if(targetClass != null) {
+        if (targetClass != null) {
             sb.append(targetClass.toString().toLowerCase());
         } else {
             sb.delete(sb.length() - 2, sb.length());
@@ -174,9 +166,8 @@ public class Action
     }
 
 
-    public static String getFormatedStringClass(Action.TYPE targetClass)
-    {
-        switch(targetClass) {
+    public static String getFormatedStringClass(Action.TYPE targetClass) {
+        switch (targetClass) {
             case DEVICEPOSITIONS:
                 return Arrays.toString(DEVICEPOSITIONS.values()).replace("[", "").replace("]", "").replace(" ", "").trim().toLowerCase();
             case HUMANPOSTURES:
@@ -188,8 +179,7 @@ public class Action
 
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         String value = this.getDevicePosition() + this.getHumanActvitiy() + this.getHumanPosition() + this.getHumanPosture();
 
         return value.hashCode();
@@ -197,9 +187,8 @@ public class Action
 
 
     @Override
-    public boolean equals(Object o)
-    {
-        if(!(o instanceof Action)) { return false; }
+    public boolean equals(Object o) {
+        if (!(o instanceof Action)) { return false; }
 
         Action action = (Action) o;
 
@@ -211,15 +200,7 @@ public class Action
 
 
     @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("DevicePosition: " + this.getDevicePosition() + System.lineSeparator());
-        sb.append("HumanPosture: " + this.getHumanPosture() + System.lineSeparator());
-        sb.append("HumanPosition: " + this.getHumanPosition() + System.lineSeparator());
-        sb.append("HumanActivity: " + this.getHumanActvitiy());
-
-        return sb.toString();
+    public String toString() {
+        return ("DevicePosition: " + this.getDevicePosition() + System.lineSeparator()) + "HumanPosture: " + this.getHumanPosture() + System.lineSeparator() + "HumanPosition: " + this.getHumanPosition() + System.lineSeparator() + "HumanActivity: " + this.getHumanActvitiy();
     }
 }

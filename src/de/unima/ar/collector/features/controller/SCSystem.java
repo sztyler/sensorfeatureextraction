@@ -1,7 +1,13 @@
 package de.unima.ar.collector.features.controller;
 
-public class SCSystem
-{
+
+/**
+ * Core class. Starts all services (threads), i.e., Window and Attribute Manager.
+ *
+ * @author Timo Sztyler
+ * @version 30.09.2016
+ */
+public class SCSystem {
     private static SCSystem SCSYSTEM;
 
     // private DataManager dataManager;
@@ -9,8 +15,7 @@ public class SCSystem
     private WindowManager    windowManager;
 
 
-    private SCSystem()
-    {
+    private SCSystem() {
         System.out.println("Starting System ...");
 
         // start thread - raw data
@@ -34,9 +39,8 @@ public class SCSystem
     }
 
 
-    public static SCSystem getInstance()
-    {
-        if(SCSYSTEM == null) {
+    public static SCSystem getInstance() {
+        if (SCSYSTEM == null) {
             DataCenter.getInstance();
             SCSYSTEM = new SCSystem();
         }
@@ -45,16 +49,14 @@ public class SCSystem
     }
 
 
-    public void shutdown()
-    {
+    public void shutdown() {
         // this.dataManager.shutdown();
         this.attributeManager.shutdown();
         this.windowManager.shutdown();
     }
 
 
-    public void clear()
-    {
+    public void clear() {
         SCSYSTEM = null;
     }
 }

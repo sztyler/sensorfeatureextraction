@@ -2,6 +2,12 @@ package de.unima.ar.collector.features.mathutils;
 
 import de.unima.ar.collector.features.model.Pair;
 
+/**
+ * Low-Pass-Filter to separate acceleration and gravity vector.
+ *
+ * @author Timo Sztyler
+ * @version 30.09.2016
+ */
 public class LowPassFilter
 {
     private double   timeConstant;
