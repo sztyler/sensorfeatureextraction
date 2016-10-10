@@ -8,6 +8,8 @@ import de.unima.sensor.features.model.Window;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 /**
@@ -119,39 +121,48 @@ public class FeatureFactory {
     }
 
 
-        public String getWindowsAsARFF(int targetClass) {
-            String csvFile = getWindowsAsCSV();
-            String[] lines = csvFile.split(System.lineSeparator());
+    public String getWindowsAsARFF(int targetClass) {
+        String   csvFile = getWindowsAsCSV();
+        String[] lines   = csvFile.split(System.lineSeparator());
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("% 1. Motion Testdata").append(System.lineSeparator()).append("%").append(System.lineSeparator());
-            sb.append("% 2. Sources:").append(System.lineSeparator()).append("%\t(a) Creator: Timo Sztyler").append(System.lineSeparator());
-            sb.append("%\t(b) Date: ").append(System.currentTimeMillis()).append(System.lineSeparator()).append("%").append(System.lineSeparator());
-            sb.append("@RELATION motion").append(System.lineSeparator()).append(System.lineSeparator());
-            String[] header = lines[0].split(",");
-            for (String entry : header) {
-                if (targetClass != null && entry.trim().toLowerCase().equals(targetClass.toString().toLowerCase())) {
-                    continue;
-                }
+        List<Window> windows = dc.getWindows();
+        if (windows.size() == 0) {
+            return "";
+        }
+        int total = windows.get(0).getLabels().length;
 
-                if (Arrays.toString(Action.TYPE.values()).replace(" ", "").contains(entry.trim().toUpperCase())) {
-                    sb.append("@ATTRIBUTE ").append(entry.trim()).append(" STRING").append(System.lineSeparator());
-                    continue;
-                }
+        Set<String> targetClasses = new TreeSet<>();
+        for (int i = 1; i < lines.length; i++) {
+            String[] elements = lines[i].split(",");
+            targetClasses.add(elements[elements.length - (total - targetClass)]);
+        }
+        String formatted = Arrays.toString(targetClasses.toArray(new String[targetClasses.size()])).replace("[", "").replace("]", "").replace(" ", "");
 
+        StringBuilder sb = new StringBuilder();
+        sb.append("% 1. Motion Testdata").append(System.lineSeparator()).append("%").append(System.lineSeparator());
+        sb.append("% 2. Sources:").append(System.lineSeparator()).append("%\t(a) Creator: FeatureFactory").append(System.lineSeparator());
+        sb.append("%\t(b) Date: ").append(System.currentTimeMillis()).append(System.lineSeparator()).append("%").append(System.lineSeparator());
+        sb.append("@RELATION motion").append(System.lineSeparator()).append(System.lineSeparator());
+        String[] header = lines[0].split(",");
+        for (String entry : header) {
+            if (entry.trim().toLowerCase().equals("label_" + targetClass)) {
+                sb.append("@ATTRIBUTE class {").append(formatted).append("}").append(System.lineSeparator());
+            } else if (entry.trim().toLowerCase().startsWith("label_")) {
+                sb.append("@ATTRIBUTE ").append(entry.trim()).append(" STRING").append(System.lineSeparator());
+            } else {
                 sb.append("@ATTRIBUTE ").append(entry.trim()).append(" NUMERIC").append(System.lineSeparator());
             }
-            sb.append("@ATTRIBUTE class {").append(Action.getFormatedStringClass(targetClass)).append("}").append(System.lineSeparator());
-            sb.append(System.lineSeparator()).append("@DATA").append(System.lineSeparator());
-
-            for (int i = 1; i < lines.length; i++) {
-                sb.append(lines[i].replace(";", ",")).append(System.lineSeparator());
-            }
-
-            sb.setLength(sb.length() - (System.lineSeparator()).length());
-
-            return sb.toString();
         }
+        sb.append(System.lineSeparator()).append("@DATA").append(System.lineSeparator());
+
+        for (int i = 1; i < lines.length; i++) {
+            sb.append(lines[i].replace(";", ",")).append(System.lineSeparator());
+        }
+
+        sb.setLength(sb.length() - (System.lineSeparator()).length());
+
+        return sb.toString();
+    }
 
 
     public String getWindowsAsCSV() {

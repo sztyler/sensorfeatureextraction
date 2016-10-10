@@ -42,7 +42,7 @@ public class UsageExample {
             System.out.println(window);
         }
 
-        String arffFile = ff.getWindowsAsCSV();
+        String arffFile = ff.getWindowsAsARFF(0);
         System.out.println(arffFile);
 
         ff.stop();
