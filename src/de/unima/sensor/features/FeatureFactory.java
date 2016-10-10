@@ -2,8 +2,8 @@ package de.unima.sensor.features;
 
 import de.unima.sensor.features.controller.DataCenter;
 import de.unima.sensor.features.controller.SCSystem;
-import de.unima.sensor.features.model.SensorType;
 import de.unima.sensor.features.model.SensorData;
+import de.unima.sensor.features.model.SensorType;
 import de.unima.sensor.features.model.Window;
 
 import java.util.Arrays;
@@ -23,15 +23,16 @@ public class FeatureFactory {
     private SCSystem   sc;
     private DataCenter dc;
     private boolean    running;
-
+    private int        windowCounter;
 
     public FeatureFactory(SensorType sensor) {
         this.sensor = sensor;
         this.running = false;
+        this.windowCounter = 0;
     }
 
     public boolean addAccelerationData(long timestamp, float[] values) {
-        return this.addAccelerationData(timestamp, values);
+        return this.addAccelerationData(timestamp, values, "unknown");
     }
 
     public boolean addAccelerationData(long timestamp, float[] values, String... labels) {
@@ -46,8 +47,16 @@ public class FeatureFactory {
         return true;
     }
 
-
     public List<Window> getWindows() {
+        List<Window> windows    = dc.getWindows();
+        List<Window> newWindows = windows.subList(this.windowCounter, windows.size());
+        this.windowCounter=windows.size();
+
+        return newWindows;
+    }
+
+
+    public List<Window> getAllWindows() {
         return dc.getWindows();
     }
 

@@ -35,8 +35,8 @@ public class UsageExample {
 
         List<Window> result = new ArrayList<>();
         do {
-            result.addAll(ff.getWindows());
             Thread.sleep(1000);
+            result.addAll(ff.getWindows());
         } while (!ff.isIdle());
         for (Window window : result) {
             System.out.println(window);
