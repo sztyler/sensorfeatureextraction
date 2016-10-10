@@ -1,6 +1,6 @@
 package de.unima.sensor.features.controller;
 
-import de.unima.sensor.features.Config;
+import de.unima.sensor.features.FactoryProperties;
 import de.unima.sensor.features.Utils;
 import de.unima.sensor.features.model.SensorData;
 
@@ -40,7 +40,7 @@ public class AttributeManager implements Runnable {
 
             // verify last modification
             if (this.timeStamp >= tmpTime) { // TODO SLEEP NOTIFY
-                Utils.sleep(Config.MANAGER_ATTRIBUTE_IDLE);
+                Utils.sleep(FactoryProperties.MANAGER_ATTRIBUTE_IDLE);
                 continue;
             }
             this.timeStamp = tmpTime;
@@ -56,7 +56,7 @@ public class AttributeManager implements Runnable {
             // job complete
             this.alreadyRead += copy.size();
 
-            Utils.sleep(Config.MANAGER_ATTRIBUTE_IDLE);
+            Utils.sleep(FactoryProperties.MANAGER_ATTRIBUTE_IDLE);
         }
 
         System.out.println("> AttributeManager terminated!");

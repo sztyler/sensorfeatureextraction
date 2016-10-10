@@ -1,8 +1,8 @@
 package de.unima.sensor.features.controller;
 
-import de.unima.sensor.features.Config;
+import de.unima.sensor.features.FactoryProperties;
 import de.unima.sensor.features.model.Attribute;
-import de.unima.sensor.features.model.Sensor;
+import de.unima.sensor.features.model.SensorType;
 import de.unima.sensor.features.model.SensorData;
 import de.unima.sensor.features.model.Window;
 
@@ -19,11 +19,11 @@ import java.util.Map.Entry;
 public class DataCenter {
     private static DataCenter DATACENTER = null;
 
-    private List<SensorData>             rawSensorData;
-    private Map<Sensor, Set<Attribute>>  attributes;               // sensor, attribute, values
-    private List<Window>                 windows;
-    private NavigableMap<Long, Integer>  timeStamps;               // timestamp, position
-    private NavigableMap<Long, String[]> labels;                     // informationen über die Tätigkeiten der Person
+    private List<SensorData>                rawSensorData;
+    private Map<SensorType, Set<Attribute>> attributes;               // sensor, attribute, values
+    private List<Window>                    windows;
+    private NavigableMap<Long, Integer>     timeStamps;               // timestamp, position
+    private NavigableMap<Long, String[]>    labels;                     // informationen über die Tätigkeiten der Person
 
     private long rawDataLastModified;
     private long attributesLastModified;
@@ -76,7 +76,7 @@ public class DataCenter {
     }
 
 
-    public Set<Attribute> getAttributes(Sensor s) {
+    public Set<Attribute> getAttributes(SensorType s) {
         synchronized (attributesLock) {
             if (!(this.attributes.containsKey(s))) { return new HashSet<Attribute>(); }
 
@@ -146,14 +146,14 @@ public class DataCenter {
     }
 
 
-    public void addAttribute(Sensor sen, String attr, long timestamp, double value) {
+    public void addAttribute(SensorType sen, String attr, long timestamp, double value) {
         synchronized (attributesLock) {
             if (!this.attributes.containsKey(sen)) {
                 this.attributes.put(sen, new HashSet<Attribute>());
             }
 
             Set<Attribute> attributes = this.attributes.get(sen);
-            Attribute      attribute  = new Attribute(sen, attr, Config.LOWPASSFILTER);
+            Attribute      attribute  = new Attribute(sen, attr, FactoryProperties.LOWPASSFILTER);
 
             if (!(attributes.contains(attribute))) {
                 attributes.add(attribute);
@@ -228,8 +228,8 @@ public class DataCenter {
         StringBuilder sb = new StringBuilder();
 
         sb.append("RawData: ").append(this.getRawData().size()).append(System.lineSeparator());
-        sb.append("Attributes (Acc): ").append(this.getAttributes(Sensor.ACCELERATION).size()).append(System.lineSeparator());
-        for (Attribute attr : this.getAttributes(Sensor.ACCELERATION)) {
+        sb.append("Attributes (Acc): ").append(this.getAttributes(SensorType.ACCELERATION).size()).append(System.lineSeparator());
+        for (Attribute attr : this.getAttributes(SensorType.ACCELERATION)) {
             sb.append("> ").append(attr.toString()).append(System.lineSeparator());
         }
         sb.append("Windows: ").append(this.getWindows().size()).append(System.lineSeparator());

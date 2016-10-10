@@ -1,6 +1,6 @@
 package de.unima.sensor.features.mathutils;
 
-import de.unima.sensor.features.Config;
+import de.unima.sensor.features.FactoryProperties;
 import de.unima.sensor.features.Utils;
 import org.jtransforms.fft.DoubleFFT_1D;
 
@@ -17,12 +17,12 @@ public class Measures
     // time-domain
     public static double meanValue(double[] values)  // Mittelwert
     {
-        if(values.length < Config.WINDOW_MINIMUM_VALUES) { return 0.0d; }
+        if(values.length < FactoryProperties.WINDOW_MINIMUM_VALUES) { return 0.0d; }
 
         double mean = 0.0d;
 
         for(double d : values) {
-            if(Config.ABSOLUT) {
+            if(FactoryProperties.ABSOLUT) {
                 mean += Math.abs(d);
             } else {
                 mean += d;
@@ -37,12 +37,12 @@ public class Measures
     // time-domain
     public static double varianceValue(double[] values, double mean, boolean sample) // korrigierte oder unverzerrte Stichprobenvarianz
     {
-        if(values.length < Config.WINDOW_MINIMUM_VALUES) { return 0.0d; }
+        if(values.length < FactoryProperties.WINDOW_MINIMUM_VALUES) { return 0.0d; }
 
         double varianz = 0.0d;
 
         for(double d : values) {
-            if(Config.ABSOLUT) {
+            if(FactoryProperties.ABSOLUT) {
                 varianz += Math.pow((mean - Math.abs(d)), 2);
             } else {
                 varianz += Math.pow((mean - d), 2);
@@ -71,11 +71,11 @@ public class Measures
     // time-domain
     public static double medianValue(double[] values)
     {
-        if(values.length < Config.WINDOW_MINIMUM_VALUES) { return 0.0d; }
+        if(values.length < FactoryProperties.WINDOW_MINIMUM_VALUES) { return 0.0d; }
 
         List<Double> tmp = new ArrayList<>();
         for(double d : values) {
-            if(Config.ABSOLUT) {
+            if(FactoryProperties.ABSOLUT) {
                 tmp.add(Math.abs(d));
             } else {
                 tmp.add(d);
@@ -94,13 +94,13 @@ public class Measures
     // time-domain
     public static double iqrValue(double[] values)
     {
-        if(values.length < Config.WINDOW_MINIMUM_VALUES) { return 0.0d; }
+        if(values.length < FactoryProperties.WINDOW_MINIMUM_VALUES) { return 0.0d; }
 
         double iqr = 0.0d; // interquartile range = Interquartilsabstand = Q3-Q1 = Q0,75-Q0,25
 
         List<Double> sortedList = new ArrayList<>();
         for(int i = 0; i < values.length; i++) {
-            if(Config.ABSOLUT) {
+            if(FactoryProperties.ABSOLUT) {
                 sortedList.add(Math.abs(values[i]));
             } else {
                 sortedList.add(values[i]);
@@ -140,12 +140,12 @@ public class Measures
     // time-domain
     public static double matValue(double[] values, double mean)
     {
-        if(values.length < Config.WINDOW_MINIMUM_VALUES) { return 0.0d; }
+        if(values.length < FactoryProperties.WINDOW_MINIMUM_VALUES) { return 0.0d; }
 
         double mat = 0.0d;  // Mean absolute deviation = average absolute deviation
 
         for(double d : values) {
-            if(Config.ABSOLUT) {
+            if(FactoryProperties.ABSOLUT) {
                 mat += Math.abs(Math.abs(d) - mean);
             } else {
                 mat += Math.abs(d - mean);
@@ -160,7 +160,7 @@ public class Measures
     // time-domain
     public static double kurtosisValue(double[] values, double mean)
     {
-        if(values.length < Config.WINDOW_MINIMUM_VALUES) { return 0.0d; }
+        if(values.length < FactoryProperties.WINDOW_MINIMUM_VALUES) { return 0.0d; }
 
         double varianz = Measures.varianceValue(values, mean, false);
         double sd = Measures.standardDeviationValue(varianz);
@@ -169,7 +169,7 @@ public class Measures
 
         // kurtosis
         for(double d : values) {
-            if(Config.ABSOLUT) {
+            if(FactoryProperties.ABSOLUT) {
                 kurtosis += Math.pow((Math.abs(d) - mean) / sd, 4);
             } else {
                 kurtosis += Math.pow((d - mean) / sd, 4);
@@ -184,7 +184,7 @@ public class Measures
     // time-domain
     public static double correlationCoefficientValue(double[] x, double[] y, double meanX, double meanY)
     {
-        if(x.length < Config.WINDOW_MINIMUM_VALUES || x.length != y.length) { return 0.0d; }
+        if(x.length < FactoryProperties.WINDOW_MINIMUM_VALUES || x.length != y.length) { return 0.0d; }
 
         double cc = 0.0d;   // nach Pearson
 
@@ -195,7 +195,7 @@ public class Measures
         double sumAB = 0.0d;
 
         for(int i = 0; i < x.length; i++) {
-            if(Config.ABSOLUT) {
+            if(FactoryProperties.ABSOLUT) {
                 a = Math.abs(x[i]) - meanX;
                 b = Math.abs(y[i]) - meanY;
             } else {
@@ -219,7 +219,7 @@ public class Measures
     // time-domain
     public static double gravityMeanValue(double[] values)
     {
-        if(values.length < Config.WINDOW_MINIMUM_VALUES) { return 0.0d; }
+        if(values.length < FactoryProperties.WINDOW_MINIMUM_VALUES) { return 0.0d; }
 
         double gravityMean = 0.0d;
 
@@ -235,7 +235,7 @@ public class Measures
     // time-domain
     public static Double orientationValue(double a, double b)
     {
-        // if(values.length < Config.WINDOW_MINIMUM_VALUES) { return 0.0d; }
+        // if(values.length < FactoryProperties.WINDOW_MINIMUM_VALUES) { return 0.0d; }
 
         // int pos = values.length / 2 + 1;
         // double a = values[pos];

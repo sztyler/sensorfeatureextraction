@@ -14,7 +14,7 @@ import java.util.List;
  * @version 30.09.2016
  */
 public class Attribute implements Comparable<Attribute> {
-    private Sensor        sensor;
+    private SensorType    sensor;
     private String        attribute;
     private long          start;     // ursprünglicher globaler startzeitpunkt dieser Datenreihe
     private List<Long>    times;     // timestamp
@@ -25,7 +25,7 @@ public class Attribute implements Comparable<Attribute> {
     private final Object valuesLock;
 
 
-    public Attribute(Sensor sensor, String attribute, boolean lpf) {
+    public Attribute(SensorType sensor, String attribute, boolean lpf) {
         this.sensor = sensor;
         this.attribute = attribute;
         this.times = new ArrayList<>();
@@ -127,7 +127,7 @@ public class Attribute implements Comparable<Attribute> {
     }
 
 
-    public Sensor getSensor() {
+    public SensorType getSensor() {
         return this.sensor;
     }
 

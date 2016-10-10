@@ -1,6 +1,6 @@
 package de.unima.sensor.features.test;
 
-import de.unima.sensor.features.Config;
+import de.unima.sensor.features.FactoryProperties;
 import de.unima.sensor.features.mathutils.Measures;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 public class MeasureTest {
     @Test
     public void meanValue() {
-        Config.WINDOW_MINIMUM_VALUES = 3;
+        FactoryProperties.WINDOW_MINIMUM_VALUES = 3;
 
         double[] values = {6, 11, 7};
         double   mean   = Measures.meanValue(values);
@@ -32,7 +32,7 @@ public class MeasureTest {
 
     @Test
     public void varianceValue() {
-        Config.WINDOW_MINIMUM_VALUES = 5;
+        FactoryProperties.WINDOW_MINIMUM_VALUES = 5;
 
         double[] values = {600, 470, 170, 430, 300};
 
@@ -52,7 +52,7 @@ public class MeasureTest {
 
     @Test
     public void standardDeviationValue() {
-        Config.WINDOW_MINIMUM_VALUES = 5;
+        FactoryProperties.WINDOW_MINIMUM_VALUES = 5;
 
         double[] values = {600, 470, 170, 430, 300};
 
@@ -74,7 +74,7 @@ public class MeasureTest {
 
     @Test
     public void medianValue() {
-        Config.WINDOW_MINIMUM_VALUES = 9;
+        FactoryProperties.WINDOW_MINIMUM_VALUES = 9;
 
         double[] values = {3, 13, 7, 5, 21, 23, 39, 23, 40, 23, 14, 12, 56, 23, 29};
         double   median = Measures.medianValue(values);
@@ -90,7 +90,7 @@ public class MeasureTest {
 
     @Test
     public void iqrValue() {
-        Config.WINDOW_MINIMUM_VALUES = 4;
+        FactoryProperties.WINDOW_MINIMUM_VALUES = 4;
 
         double[] values = {5, 8, 4, 4, 6, 3, 8};
         double   iqr    = Measures.iqrValue(values);
@@ -111,7 +111,7 @@ public class MeasureTest {
 
     @Test
     public void matValue() {
-        Config.WINDOW_MINIMUM_VALUES = 8;
+        FactoryProperties.WINDOW_MINIMUM_VALUES = 8;
 
         double[] values = {3, 6, 6, 7, 8, 11, 15, 16};
 
@@ -131,7 +131,7 @@ public class MeasureTest {
 
     @Test
     public void correlationCoefficientValue() {
-        Config.WINDOW_MINIMUM_VALUES = 5;
+        FactoryProperties.WINDOW_MINIMUM_VALUES = 5;
 
         double[] valuesX = {60, 61, 62, 63, 65};
         double[] valuesY = {3.1, 3.6, 3.8, 4, 4.1};
@@ -155,7 +155,7 @@ public class MeasureTest {
 
     @Test
     public void kurtosisValue() {
-        Config.WINDOW_MINIMUM_VALUES = 6;
+        FactoryProperties.WINDOW_MINIMUM_VALUES = 6;
 
         double[] values = {1, 12, 13, 23, 64, 10};
 

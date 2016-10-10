@@ -6,9 +6,9 @@ package de.unima.sensor.features;
  * afterwards might result in side effects.
  *
  * @author Timo Sztyler
- * @version 30.09.2016
+ * @version 10.10.2016
  */
-public class Config {
+public class FactoryProperties {
     // Window Manager
     public static long    WINDOW_SIZE           = 1000;     // milliseconds
     public static boolean WINDOW_OVERLAP        = true;

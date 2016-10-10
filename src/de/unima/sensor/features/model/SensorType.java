@@ -6,6 +6,6 @@ package de.unima.sensor.features.model;
  * @author Timo Sztyler
  * @version 30.09.2016
  */
-public enum Sensor {
+public enum SensorType {
     ACCELERATION;
 }

@@ -2,7 +2,7 @@ package de.unima.sensor.features;
 
 import de.unima.sensor.features.controller.DataCenter;
 import de.unima.sensor.features.controller.SCSystem;
-import de.unima.sensor.features.model.Sensor;
+import de.unima.sensor.features.model.SensorType;
 import de.unima.sensor.features.model.SensorData;
 import de.unima.sensor.features.model.Window;
 
@@ -19,13 +19,13 @@ import java.util.TreeSet;
  * @version 10.10.2016
  */
 public class FeatureFactory {
-    private Sensor     sensor;
+    private SensorType sensor;
     private SCSystem   sc;
     private DataCenter dc;
     private boolean    running;
 
 
-    public FeatureFactory(Sensor sensor) {
+    public FeatureFactory(SensorType sensor) {
         this.sensor = sensor;
         this.running = false;
     }
@@ -76,7 +76,7 @@ public class FeatureFactory {
     }
 
 
-    public void setConfig(Config config) {
+    public void setConfig(FactoryProperties config) {
         // TODO
     }
 
@@ -85,7 +85,7 @@ public class FeatureFactory {
         // still reading data?
         long size = DataCenter.getInstance().getRawDataLastModified();
         try {
-            Thread.sleep(Config.MANAGER_DATA_IDLE * 10);
+            Thread.sleep(FactoryProperties.MANAGER_DATA_IDLE * 10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -96,7 +96,7 @@ public class FeatureFactory {
         // still creating attributes?
         long size5 = DataCenter.getInstance().getAttributesLastModified();
         try {
-            Thread.sleep(Config.MANAGER_ATTRIBUTE_IDLE * 10);
+            Thread.sleep(FactoryProperties.MANAGER_ATTRIBUTE_IDLE * 10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -107,7 +107,7 @@ public class FeatureFactory {
         // still creating windows?
         long size3 = DataCenter.getInstance().getWindowsLastModified();
         try {
-            Thread.sleep(Config.MANAGER_WINDOW_IDLE * 10);
+            Thread.sleep(FactoryProperties.MANAGER_WINDOW_IDLE * 10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

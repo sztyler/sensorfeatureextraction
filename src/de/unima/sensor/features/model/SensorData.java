@@ -7,13 +7,13 @@ package de.unima.sensor.features.model;
  * @version 10.10.2016
  */
 public class SensorData {
-    private Sensor   sensor;
-    private long     timestamp;
-    private String[] labels;
-    private float[]  values;
+    private SensorType sensor;
+    private long       timestamp;
+    private String[]   labels;
+    private float[]    values;
 
 
-    public SensorData(Sensor sensor) {
+    public SensorData(SensorType sensor) {
         this.sensor = sensor;
     }
 
@@ -29,7 +29,7 @@ public class SensorData {
     }
 
 
-    public Sensor getSensor() {
+    public SensorType getSensor() {
         return this.sensor;
     }
 

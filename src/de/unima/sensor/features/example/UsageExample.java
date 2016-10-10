@@ -1,7 +1,7 @@
 package de.unima.sensor.features.example;
 
 import de.unima.sensor.features.FeatureFactory;
-import de.unima.sensor.features.model.Sensor;
+import de.unima.sensor.features.model.SensorType;
 import de.unima.sensor.features.model.Window;
 
 import java.io.BufferedReader;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class UsageExample {
     public static void main(String[] args) throws Exception {
-        FeatureFactory ff = new FeatureFactory(Sensor.ACCELERATION);
+        FeatureFactory ff = new FeatureFactory(SensorType.ACCELERATION);
         ff.start();
 
         File file = new File("data/example/acc_data.csv");

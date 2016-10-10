@@ -1,9 +1,9 @@
 package de.unima.sensor.features.controller;
 
-import de.unima.sensor.features.Config;
+import de.unima.sensor.features.FactoryProperties;
 import de.unima.sensor.features.Utils;
 import de.unima.sensor.features.model.Attribute;
-import de.unima.sensor.features.model.Sensor;
+import de.unima.sensor.features.model.SensorType;
 import de.unima.sensor.features.model.Window;
 
 import java.util.Set;
@@ -36,13 +36,13 @@ public class WindowManager implements Runnable {
 
     private void create() {
         DataCenter dc     = DataCenter.getInstance();
-        Sensor     sensor = Sensor.ACCELERATION;
+        SensorType sensor = SensorType.ACCELERATION;
 
         while (this.isRunning) {
             long tmpTime = dc.getAttributesLastModified();
 
             if (tmpTime <= this.timeStamp) {
-                Utils.sleep(Config.MANAGER_WINDOW_IDLE);
+                Utils.sleep(FactoryProperties.MANAGER_WINDOW_IDLE);
                 continue;
             }
             this.timeStamp = tmpTime;
@@ -50,29 +50,29 @@ public class WindowManager implements Runnable {
             Set<Attribute> attrs = dc.getAttributes(sensor);
 
             if (attrs.size() == 0) {
-                Utils.sleep(Config.MANAGER_WINDOW_IDLE);
+                Utils.sleep(FactoryProperties.MANAGER_WINDOW_IDLE);
                 continue;
             }
 
             long end = attrs.iterator().next().getLastTimestamp();
 
-            if ((end - alreadyRead) < Config.WINDOW_SIZE) {
-                Utils.sleep(Config.MANAGER_WINDOW_IDLE);
+            if ((end - alreadyRead) < FactoryProperties.WINDOW_SIZE) {
+                Utils.sleep(FactoryProperties.MANAGER_WINDOW_IDLE);
                 continue;
             }
 
-            String[] labels = dc.getLabels((alreadyRead + (Config.WINDOW_SIZE / 2)));
+            String[] labels = dc.getLabels((alreadyRead + (FactoryProperties.WINDOW_SIZE / 2)));
 
-            Window window = new Window(this.windowCounter, alreadyRead, alreadyRead + Config.WINDOW_SIZE, labels);
+            Window window = new Window(this.windowCounter, alreadyRead, alreadyRead + FactoryProperties.WINDOW_SIZE, labels);
             window.addSensor(sensor);
             window.build();
             dc.addWindow(window);
             this.timeStamp = 0;
 
-            if (Config.WINDOW_OVERLAP) {
-                alreadyRead += Config.WINDOW_SIZE * Config.WINDOW_OVERLAP_SIZE;
+            if (FactoryProperties.WINDOW_OVERLAP) {
+                alreadyRead += FactoryProperties.WINDOW_SIZE * FactoryProperties.WINDOW_OVERLAP_SIZE;
             } else {
-                alreadyRead += Config.WINDOW_SIZE;
+                alreadyRead += FactoryProperties.WINDOW_SIZE;
             }
 
             this.windowCounter++;
