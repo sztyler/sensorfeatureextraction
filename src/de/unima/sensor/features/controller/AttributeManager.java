@@ -1,8 +1,8 @@
-package de.unima.ar.collector.features.controller;
+package de.unima.sensor.features.controller;
 
-import de.unima.ar.collector.features.Config;
-import de.unima.ar.collector.features.Utils;
-import de.unima.ar.collector.features.model.SensorData;
+import de.unima.sensor.features.Config;
+import de.unima.sensor.features.Utils;
+import de.unima.sensor.features.model.SensorData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,7 @@ public class AttributeManager implements Runnable {
             }
 
             dc.addAttribute(sd.getSensor(), "attr_time", sd.getTimestamp(), sd.getTimestamp());
-            dc.addAction(sd.getTimestamp(), sd.getAction());
+            dc.addLabels(sd.getTimestamp(), sd.getLabels());
         }
     }
 

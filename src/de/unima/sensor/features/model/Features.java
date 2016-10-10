@@ -1,7 +1,7 @@
-package de.unima.ar.collector.features.model;
+package de.unima.sensor.features.model;
 
-import de.unima.ar.collector.features.Utils;
-import de.unima.ar.collector.features.mathutils.Measures;
+import de.unima.sensor.features.Utils;
+import de.unima.sensor.features.mathutils.Measures;
 
 import java.text.DecimalFormat;
 import java.util.*;

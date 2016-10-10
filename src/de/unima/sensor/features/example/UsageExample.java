@@ -1,9 +1,8 @@
-package de.unima.ar.collector.features.example;
+package de.unima.sensor.features.example;
 
-import de.unima.ar.collector.features.FE;
-import de.unima.ar.collector.features.model.Action;
-import de.unima.ar.collector.features.model.Sensor;
-import de.unima.ar.collector.features.model.Window;
+import de.unima.sensor.features.FeatureFactory;
+import de.unima.sensor.features.model.Sensor;
+import de.unima.sensor.features.model.Window;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,12 +14,12 @@ import java.util.List;
  * Usage example how these libary has to be used to process acceleration data.
  *
  * @author Timo Sztyler
- * @version 30.09.2016
+ * @version 10.10.2016
  */
 public class UsageExample {
     public static void main(String[] args) throws Exception {
-        FE fe = new FE(Sensor.ACCELERATION);
-        fe.start();
+        FeatureFactory ff = new FeatureFactory(Sensor.ACCELERATION);
+        ff.start();
 
         File file = new File("data/example/acc_data.csv");
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -30,23 +29,23 @@ public class UsageExample {
                 long     timestamp = Long.parseLong(fragments[1]);
                 float[]  values    = new float[]{Float.parseFloat(fragments[2]), Float.parseFloat(fragments[3]), Float.parseFloat(fragments[4])};
 
-                fe.addAccelerationData(timestamp, values, Action.DEVICEPOSITIONS.SHIN, Action.HUMANPOSTURES.WALKING, "mall", "shopping");
+                ff.addAccelerationData(timestamp, values, "walking", "shin", "mall", "shopping");
             }
         }
 
         List<Window> result = new ArrayList<>();
         do {
-            result.addAll(fe.getWindows());
+            result.addAll(ff.getWindows());
             Thread.sleep(1000);
-        } while (!fe.isIdle());
+        } while (!ff.isIdle());
         for (Window window : result) {
             System.out.println(window);
         }
 
-        String arffFile = fe.getWindowsAsARFF(Action.TYPE.HUMANPOSTURES);
+        String arffFile = ff.getWindowsAsCSV();
         System.out.println(arffFile);
 
-        fe.stop();
-        fe.clear();
+        ff.stop();
+        ff.clear();
     }
 }

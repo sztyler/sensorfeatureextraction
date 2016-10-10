@@ -1,6 +1,6 @@
-package de.unima.ar.collector.features.model;
+package de.unima.sensor.features.model;
 
-import de.unima.ar.collector.features.mathutils.LowPassFilter;
+import de.unima.sensor.features.mathutils.LowPassFilter;
 
 import java.util.ArrayList;
 import java.util.List;

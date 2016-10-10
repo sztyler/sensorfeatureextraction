@@ -1,10 +1,10 @@
-package de.unima.ar.collector.features.model;
+package de.unima.sensor.features.model;
 
 /**
  * Generic pair class that is used to store the gravity and acceleration vector separately.
  *
  * @author Timo Sztyler
- * @version 30.09.2016
+ * @version 10.10.2016
  */
 public class Pair<L, R> {
     private L left;

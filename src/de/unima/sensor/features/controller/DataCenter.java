@@ -1,7 +1,10 @@
-package de.unima.ar.collector.features.controller;
+package de.unima.sensor.features.controller;
 
-import de.unima.ar.collector.features.Config;
-import de.unima.ar.collector.features.model.*;
+import de.unima.sensor.features.Config;
+import de.unima.sensor.features.model.Attribute;
+import de.unima.sensor.features.model.Sensor;
+import de.unima.sensor.features.model.SensorData;
+import de.unima.sensor.features.model.Window;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -11,16 +14,16 @@ import java.util.Map.Entry;
  * the attribute manager and window manager push their processed data to this data center.
  *
  * @author Timo Sztyler
- * @version 30.09.2016
+ * @version 10.10.2016
  */
 public class DataCenter {
     private static DataCenter DATACENTER = null;
 
-    private List<SensorData>            rawSensorData;
-    private Map<Sensor, Set<Attribute>> attributes;               // sensor, attribute, values
-    private List<Window>                windows;
-    private NavigableMap<Long, Integer> timeStamps;               // timestamp, position
-    private NavigableMap<Long, Action>  actions;                     // informationen über die Tätigkeiten der Person
+    private List<SensorData>             rawSensorData;
+    private Map<Sensor, Set<Attribute>>  attributes;               // sensor, attribute, values
+    private List<Window>                 windows;
+    private NavigableMap<Long, Integer>  timeStamps;               // timestamp, position
+    private NavigableMap<Long, String[]> labels;                     // informationen über die Tätigkeiten der Person
 
     private long rawDataLastModified;
     private long attributesLastModified;
@@ -51,7 +54,7 @@ public class DataCenter {
         this.requiredTime = 0;
 
         this.timeStamps = new TreeMap<>();
-        this.actions = new TreeMap<>();
+        this.labels = new TreeMap<>();
 
         Locale.setDefault(Locale.US);
     }
@@ -128,10 +131,10 @@ public class DataCenter {
     }
 
 
-    public Action getAction(long key) {
-        long floorKey = this.actions.floorKey(key);
+    public String[] getLabels(long key) {
+        long floorKey = this.labels.floorKey(key);
 
-        return this.actions.get(floorKey);
+        return this.labels.get(floorKey);
     }
 
 
@@ -188,20 +191,20 @@ public class DataCenter {
     }
 
 
-    public void addAction(long time, Action action) {
-        if (this.actions.size() == 0) {
+    public void addLabels(long time, String... label) {
+        if (this.labels.size() == 0) {
             time = 0;
         } else {
-            time = time - this.actions.get(0l).getTime();
+            time = time - this.labels.firstKey();
         }
 
-        Long key = this.actions.floorKey(time);
+        Long key = this.labels.floorKey(time);
         if (key != null) {
-            Action object = this.actions.get(key);
-            if (action.equals(object)) { return; }
+            String[] object = this.labels.get(key);
+            if (Arrays.equals(label, object)) { return; }
         }
 
-        this.actions.put(time, action);
+        this.labels.put(time, label);
     }
 
 
@@ -224,12 +227,12 @@ public class DataCenter {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("RawData: " + this.getRawData().size() + System.lineSeparator());
-        sb.append("Attributes (Acc): " + this.getAttributes(Sensor.ACCELERATION).size() + System.lineSeparator());
+        sb.append("RawData: ").append(this.getRawData().size()).append(System.lineSeparator());
+        sb.append("Attributes (Acc): ").append(this.getAttributes(Sensor.ACCELERATION).size()).append(System.lineSeparator());
         for (Attribute attr : this.getAttributes(Sensor.ACCELERATION)) {
-            sb.append("> " + attr.toString() + System.lineSeparator());
+            sb.append("> ").append(attr.toString()).append(System.lineSeparator());
         }
-        sb.append("Windows: " + this.getWindows().size() + System.lineSeparator());
+        sb.append("Windows: ").append(this.getWindows().size()).append(System.lineSeparator());
 
         return sb.toString();
     }

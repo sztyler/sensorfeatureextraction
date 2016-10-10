@@ -1,7 +1,7 @@
-package de.unima.ar.collector.features;
+package de.unima.sensor.features;
 
-import de.unima.ar.collector.features.model.Features;
-import de.unima.ar.collector.features.model.Window;
+import de.unima.sensor.features.model.Features;
+import de.unima.sensor.features.model.Window;
 
 import java.util.ArrayList;
 import java.util.Iterator;

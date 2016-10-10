@@ -1,6 +1,6 @@
-package de.unima.ar.collector.features.mathutils;
+package de.unima.sensor.features.mathutils;
 
-import de.unima.ar.collector.features.model.Pair;
+import de.unima.sensor.features.model.Pair;
 
 /**
  * Low-Pass-Filter to separate acceleration and gravity vector.

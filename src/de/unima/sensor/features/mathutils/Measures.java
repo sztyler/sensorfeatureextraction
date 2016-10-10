@@ -1,7 +1,7 @@
-package de.unima.ar.collector.features.mathutils;
+package de.unima.sensor.features.mathutils;
 
-import de.unima.ar.collector.features.Config;
-import de.unima.ar.collector.features.Utils;
+import de.unima.sensor.features.Config;
+import de.unima.sensor.features.Utils;
 import org.jtransforms.fft.DoubleFFT_1D;
 
 import java.util.*;

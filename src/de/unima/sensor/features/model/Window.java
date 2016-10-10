@@ -1,7 +1,7 @@
-package de.unima.ar.collector.features.model;
+package de.unima.sensor.features.model;
 
-import de.unima.ar.collector.features.Config;
-import de.unima.ar.collector.features.controller.DataCenter;
+import de.unima.sensor.features.Config;
+import de.unima.sensor.features.controller.DataCenter;
 
 import java.util.*;
 
@@ -10,22 +10,22 @@ import java.util.*;
  * acceleration data, computed features, and label.
  *
  * @author Timo Sztyler
- * @version 30.09.2016
+ * @version 10.10.2016
  */
 public class Window implements Comparable<Window> {
     private int                         id;
     private long                        start;
     private long                        end;
-    private Action                      action;
+    private String[]                    labels;
     private Map<Sensor, Set<Attribute>> data;                // sensor, attribute, and values of this window
     private Features                    features;
 
 
-    public Window(int id, long start, long end, Action action) {
+    public Window(int id, long start, long end, String... labels) {
         this.id = id;
         this.start = start;
         this.end = end;
-        this.action = action;
+        this.labels = labels;
         this.data = new HashMap<>();
         this.features = null;
     }
@@ -68,8 +68,8 @@ public class Window implements Comparable<Window> {
     }
 
 
-    public Action getAction() {
-        return this.action;
+    public String[] getLabels() {
+        return this.labels;
     }
 
 
@@ -146,6 +146,6 @@ public class Window implements Comparable<Window> {
 
     @Override
     public String toString() {
-        return "Window " + this.getId() + " : " + this.getAction().getHumanPosture() + " (" + this.getStart() + " - " + this.getEnd() + ") | " + this.getData(Sensor.ACCELERATION).iterator().next().getSize() + System.lineSeparator();
+        return "Window " + this.getId() + " : " + Arrays.toString(this.labels) + " (" + this.getStart() + " - " + this.getEnd() + ") | " + this.getData(Sensor.ACCELERATION).iterator().next().getSize() + System.lineSeparator();
     }
 }

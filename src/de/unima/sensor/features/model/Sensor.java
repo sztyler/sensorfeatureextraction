@@ -1,4 +1,4 @@
-package de.unima.ar.collector.features.model;
+package de.unima.sensor.features.model;
 
 /**
  * Supported inertial sensors.
@@ -7,5 +7,5 @@ package de.unima.ar.collector.features.model;
  * @version 30.09.2016
  */
 public enum Sensor {
-    ACCELERATION, GYROSCOPE;
+    ACCELERATION;
 }

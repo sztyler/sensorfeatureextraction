@@ -1,7 +1,7 @@
-package de.unima.ar.collector.features.test;
+package de.unima.sensor.features.test;
 
-import de.unima.ar.collector.features.Config;
-import de.unima.ar.collector.features.mathutils.Measures;
+import de.unima.sensor.features.Config;
+import de.unima.sensor.features.mathutils.Measures;
 import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;

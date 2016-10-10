@@ -1,4 +1,4 @@
-package de.unima.ar.collector.features;
+package de.unima.sensor.features;
 
 
 /**

@@ -1,16 +1,16 @@
-package de.unima.ar.collector.features.model;
+package de.unima.sensor.features.model;
 
 /**
  * Container class that covers a single record and a corresponding label of a specific sensor
  *
  * @author Timo Sztyler
- * @version 30.09.2016
+ * @version 10.10.2016
  */
 public class SensorData {
-    private Sensor  sensor;
-    private long    timestamp;
-    private Action  action;
-    private float[] values;
+    private Sensor   sensor;
+    private long     timestamp;
+    private String[] labels;
+    private float[]  values;
 
 
     public SensorData(Sensor sensor) {
@@ -18,8 +18,8 @@ public class SensorData {
     }
 
 
-    public void addAction(Action action) {
-        this.action = action;
+    public void addLabels(String... labels) {
+        this.labels = labels;
     }
 
 
@@ -39,8 +39,8 @@ public class SensorData {
     }
 
 
-    public Action getAction() {
-        return this.action;
+    public String[] getLabels() {
+        return this.labels;
     }
 
 
