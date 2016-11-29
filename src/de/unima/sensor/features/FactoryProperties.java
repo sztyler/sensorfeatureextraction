@@ -21,7 +21,7 @@ public class FactoryProperties {
     public static int MANAGER_WINDOW_IDLE    = 50;  // milliseconds
 
     // Extraction
-    public static final boolean LOWPASSFILTER = true;
+    public static final boolean LOWPASSFILTER = false;
 
     // Measures
     public static final boolean ABSOLUT = true;

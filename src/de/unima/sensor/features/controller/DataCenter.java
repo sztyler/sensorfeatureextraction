@@ -1,9 +1,10 @@
 package de.unima.sensor.features.controller;
 
 import de.unima.sensor.features.FactoryProperties;
+import de.unima.sensor.features.Utils;
 import de.unima.sensor.features.model.Attribute;
-import de.unima.sensor.features.model.SensorType;
 import de.unima.sensor.features.model.SensorData;
+import de.unima.sensor.features.model.SensorType;
 import de.unima.sensor.features.model.Window;
 
 import java.util.*;
@@ -14,16 +15,16 @@ import java.util.Map.Entry;
  * the attribute manager and window manager push their processed data to this data center.
  *
  * @author Timo Sztyler
- * @version 10.10.2016
+ * @version 29.11.2016
  */
 public class DataCenter {
     private static DataCenter DATACENTER = null;
 
-    private List<SensorData>                rawSensorData;
-    private Map<SensorType, Set<Attribute>> attributes;               // sensor, attribute, values
-    private List<Window>                    windows;
-    private NavigableMap<Long, Integer>     timeStamps;               // timestamp, position
-    private NavigableMap<Long, String[]>    labels;                     // informationen über die Tätigkeiten der Person
+    private List<SensorData>                             rawSensorData;
+    private Map<SensorType, Set<Attribute>>              attributes;               // sensor, attribute, values
+    private NavigableMap<Long, Window>                   windows;
+    private Map<SensorType, NavigableMap<Long, Integer>> timeStamps;               // timestamp, position
+    private NavigableMap<Long, String[]>                 labels;                     // informationen über die Tätigkeiten der Person
 
     private long rawDataLastModified;
     private long attributesLastModified;
@@ -41,7 +42,7 @@ public class DataCenter {
     private DataCenter() {
         this.rawSensorData = new ArrayList<>();
         this.attributes = new HashMap<>();
-        this.windows = new ArrayList<>();
+        this.windows = new TreeMap<>();
 
         this.rawDataLock = new Object();
         this.attributesLock = new Object();
@@ -53,7 +54,7 @@ public class DataCenter {
         this.windowsLastModified = 0;
         this.requiredTime = 0;
 
-        this.timeStamps = new TreeMap<>();
+        this.timeStamps = new HashMap<>();
         this.labels = new TreeMap<>();
 
         Locale.setDefault(Locale.US);
@@ -71,37 +72,38 @@ public class DataCenter {
 
     public List<SensorData> getRawData() {
         synchronized (rawDataLock) {
-            return new ArrayList<SensorData>(this.rawSensorData); // copy TODO
+            return Utils.deepCopy(this.rawSensorData);
+            //return new ArrayList<>(this.rawSensorData);
         }
     }
 
 
     public Set<Attribute> getAttributes(SensorType s) {
         synchronized (attributesLock) {
-            if (!(this.attributes.containsKey(s))) { return new HashSet<Attribute>(); }
+            if (!(this.attributes.containsKey(s))) { return new HashSet<>(); }
 
-            return this.attributes.get(s);
+            return new HashSet<>(this.attributes.get(s)); // create new container to avoid concurrency exception
         }
     }
 
 
-    public List<Window> getWindows() {
+    public NavigableMap<Long, Window> getWindows() {
         synchronized (windowsLock) {
-            return this.windows;
+            return new TreeMap<>(this.windows);
         }
     }
 
 
-    public NavigableMap<Long, Integer> getTimestamps() {
+    public NavigableMap<Long, Integer> getTimestamps(SensorType sensorType) {
         synchronized (timeStampsLock) {
-            return this.timeStamps;
+            return this.timeStamps.get(sensorType);
         }
     }
 
 
-    public Entry<Long, Integer> getTimestamp(Long key) {
+    public Entry<Long, Integer> getTimestamp(SensorType sensorType, Long key) {
         synchronized (timeStampsLock) {
-            return new AbstractMap.SimpleEntry<>(key, this.timeStamps.get(key));
+            return new AbstractMap.SimpleEntry<>(key, this.timeStamps.get(sensorType).get(key));
         }
     }
 
@@ -167,8 +169,8 @@ public class DataCenter {
 
             attribute.addValue(timestamp, value);
 
-            if (attr.equals("attr_time")) {  // TODO kann zu problemen führen wenn wir mehre Sensoren einlesen und es diese Spalte mehr als einmal gibt
-                this.addTimestamps(attribute.getLastTimestamp(), attribute.getSize() - 1);
+            if (attr.equals("attr_time")) {
+                this.addTimestamps(sen, attribute.getLastTimestamp(), attribute.getSize() - 1);
             }
 
             this.attributesLastModified++;
@@ -176,17 +178,21 @@ public class DataCenter {
     }
 
 
-    public void addWindow(Window w) {
+    public void addWindow(Long start, Window w) {
         synchronized (windowsLock) {
-            this.windows.add(w);
+            this.windows.put(start, w);
             this.windowsLastModified++;
         }
     }
 
 
-    public void addTimestamps(long time, int pos) {
+    public void addTimestamps(SensorType sensorType, long time, int pos) {
         synchronized (timeStampsLock) {
-            this.timeStamps.put(time, pos);
+            if (!this.timeStamps.containsKey(sensorType)) {
+                this.timeStamps.put(sensorType, new TreeMap<Long, Integer>());
+            }
+
+            this.timeStamps.get(sensorType).put(time, pos);
         }
     }
 
@@ -228,9 +234,9 @@ public class DataCenter {
         StringBuilder sb = new StringBuilder();
 
         sb.append("RawData: ").append(this.getRawData().size()).append(System.lineSeparator());
-        sb.append("Attributes (Acc): ").append(this.getAttributes(SensorType.ACCELERATION).size()).append(System.lineSeparator());
-        for (Attribute attr : this.getAttributes(SensorType.ACCELERATION)) {
-            sb.append("> ").append(attr.toString()).append(System.lineSeparator());
+
+        for (SensorType st : SensorType.values()) {
+            sb.append("Attributes (" + st.toString().toLowerCase() + "): ").append(this.getAttributes(st).size()).append(System.lineSeparator());
         }
         sb.append("Windows: ").append(this.getWindows().size()).append(System.lineSeparator());
 

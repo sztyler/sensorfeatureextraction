@@ -6,39 +6,32 @@ import de.unima.sensor.features.model.SensorData;
 import de.unima.sensor.features.model.SensorType;
 import de.unima.sensor.features.model.Window;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 
 /**
- * Main construct that has to be created to transform raw acceleration data to segmented windows.
+ * Main construct that has to be created to transform raw inertial sensor data to segmented windows.
  *
  * @author Timo Sztyler
- * @version 10.10.2016
+ * @version 24.11.2016
  */
 public class FeatureFactory {
-    private SensorType sensor;
     private SCSystem   sc;
     private DataCenter dc;
     private boolean    running;
-    private int        windowCounter;
+    private long       windowForward;
+    private long       windowBackward;
 
-    public FeatureFactory(SensorType sensor) {
-        this.sensor = sensor;
+    public FeatureFactory() {
         this.running = false;
-        this.windowCounter = 0;
+        this.windowForward = 0;
+        this.windowBackward = 0;
     }
 
-    public boolean addAccelerationData(long timestamp, float[] values) {
-        return this.addAccelerationData(timestamp, values, "unknown");
-    }
-
-    public boolean addAccelerationData(long timestamp, float[] values, String... labels) {
+    public boolean addRecord(SensorType sensorType, long timestamp, float[] values, String... labels) {
         if (this.sc == null || this.dc == null || !this.running) { return false; }
 
-        SensorData sd = new SensorData(sensor);
+        SensorData sd = new SensorData(sensorType);
         sd.addValues(timestamp, values);
         sd.addLabels(labels);
 
@@ -47,17 +40,37 @@ public class FeatureFactory {
         return true;
     }
 
-    public List<Window> getWindows() {
-        List<Window> windows    = dc.getWindows();
-        List<Window> newWindows = windows.subList(this.windowCounter, windows.size());
-        this.windowCounter=windows.size();
+    public NavigableMap<Long, Window> getWindows() {
+        NavigableMap<Long, Window> windows    = dc.getWindows();
+        NavigableMap<Long, Window> newWindows = new TreeMap<>();
+
+        if (windows.size() == 0) {
+            return newWindows;
+        }
+
+        long first = windows.firstKey();
+        long last  = windows.lastKey();
+
+        if (windowForward == 0 && windowBackward == 0) {
+            windowForward = last;
+            windowBackward = first;
+            return windows;
+        }
+
+        if (windowForward < last) {
+            newWindows.putAll(windows.subMap(windowForward, false, last, true));
+        }
+
+        if (windowBackward > first) {
+            newWindows.putAll(windows.subMap(first, true, windowBackward, false));
+        }
 
         return newWindows;
     }
 
 
-    public List<Window> getAllWindows() {
-        return dc.getWindows();
+    public NavigableMap<Long, Window> getAllWindows() {
+        return new TreeMap<>(dc.getWindows());
     }
 
 
@@ -134,7 +147,7 @@ public class FeatureFactory {
         String   csvFile = getWindowsAsCSV();
         String[] lines   = csvFile.split(System.lineSeparator());
 
-        List<Window> windows = dc.getWindows();
+        List<Window> windows = new ArrayList<>(dc.getWindows().values()); // TODO
         if (windows.size() == 0) {
             return "";
         }
@@ -176,7 +189,7 @@ public class FeatureFactory {
 
     public String getWindowsAsCSV() {
         StringBuilder sb      = new StringBuilder();
-        List<Window>  windows = dc.getWindows();
+        List<Window>  windows = new ArrayList<>(dc.getWindows().values()); // TODO
 
         if (windows.size() > 0) {
             sb.append(windows.get(0).getFeatures().getHeader()).append(", ");

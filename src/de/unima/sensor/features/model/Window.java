@@ -10,7 +10,7 @@ import java.util.*;
  * acceleration data, computed features, and label.
  *
  * @author Timo Sztyler
- * @version 10.10.2016
+ * @version 24.11.2016
  */
 public class Window implements Comparable<Window> {
     private int                             id;
@@ -42,7 +42,7 @@ public class Window implements Comparable<Window> {
         }
 
         // calculation of the features
-        this.features = new Features(this.id, this.data.get(SensorType.ACCELERATION));
+        this.features = new Features(this.id, this.data.get(this.data.entrySet().iterator().next().getKey()));   // TODO
     }
 
 
@@ -83,23 +83,35 @@ public class Window implements Comparable<Window> {
     }
 
 
+    public Set<SensorType> getSensorTypes() {
+        return this.data.keySet();
+    }
+
+
     private Set<Attribute> getData(SensorType sensor) {
         Set<Attribute> result = new HashSet<>();
 
         DataCenter dc = DataCenter.getInstance();
 
-        NavigableMap<Long, Integer> timeStamps = dc.getTimestamps();
+        NavigableMap<Long, Integer> timeStamps = dc.getTimestamps(sensor);
 
-        long startTimestamp = timeStamps.ceilingKey(this.start);
-        int  startPosition  = -1;
-        if (!(startTimestamp >= (this.start + FactoryProperties.WINDOW_SIZE))) {
-            startPosition = dc.getTimestamp(startTimestamp).getValue();
+        Long startTimestamp = timeStamps.ceilingKey(this.start);
+        if (startTimestamp == null) {
+            return result;
         }
 
-        long endTimestamp = timeStamps.floorKey(this.end);
+        int startPosition = -1;
+        if (!(startTimestamp >= (this.start + FactoryProperties.WINDOW_SIZE))) {
+            startPosition = dc.getTimestamp(sensor, startTimestamp).getValue();
+        }
+
+        Long endTimestamp = timeStamps.floorKey(this.end);
+        if (endTimestamp == null) {
+            return result;
+        }
         int  endPosition  = -1;
         if (!(endTimestamp < (this.end - FactoryProperties.WINDOW_SIZE))) {
-            endPosition = dc.getTimestamp(endTimestamp).getValue();
+            endPosition = dc.getTimestamp(sensor, endTimestamp).getValue();
         }
 
         Set<Attribute> attrs = dc.getAttributes(sensor);
@@ -128,9 +140,7 @@ public class Window implements Comparable<Window> {
 
         Window w = (Window) o;
 
-        if (this.hashCode() == w.hashCode()) { return true; }
-
-        return false;
+        return this.hashCode() == w.hashCode();
     }
 
 
@@ -146,6 +156,15 @@ public class Window implements Comparable<Window> {
 
     @Override
     public String toString() {
-        return "Window " + this.getId() + " : " + Arrays.toString(this.labels) + " (" + this.getStart() + " - " + this.getEnd() + ") | " + this.getData(SensorType.ACCELERATION).iterator().next().getSize() + System.lineSeparator();
+        String s = "Window " + this.getId() + " : [";
+        for (SensorType sensorType : this.data.keySet()) {
+            s += sensorType.toString().substring(0, 3) + ": " + (this.getData(sensorType).size() > 0 ? this.getData(sensorType).iterator().next().getSize() : "0") + ", ";
+        }
+        if(this.data.isEmpty()) {
+            s += "no data available, ";
+        }
+        s = s.substring(0, s.length() - 2) + "] | " + Arrays.toString(this.labels) + " | (" + this.getStart() + " - " + this.getEnd() + ") | " + System.lineSeparator();
+
+        return s;
     }
 }

@@ -47,13 +47,14 @@ public class Attribute implements Comparable<Attribute> {
                 this.start = timestamp;
             }
 
-            this.times.add(timestamp - this.start);
+            this.times.add(timestamp);
 
             if (lpf == null) {
                 this.values.add(value);
                 this.gravities.add(Double.NaN);
             } else {
-                Pair<double[], double[]> lpfValues = lpf.addSamples(new double[]{value}, (timestamp - start));
+                //Pair<double[], double[]> lpfValues = lpf.addSamples(new double[]{value}, (timestamp - start));
+                Pair<double[], double[]> lpfValues = lpf.addSamples(new double[]{value}, (timestamp));
                 this.values.add(lpfValues.getLeft()[0]);
                 this.gravities.add(lpfValues.getRight()[0]);
             }
@@ -73,7 +74,7 @@ public class Attribute implements Comparable<Attribute> {
             }
 
             for (Long time : times) {
-                this.times.add(time - this.start);
+                this.times.add(time);
             }
         }
     }

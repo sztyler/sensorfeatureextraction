@@ -4,8 +4,8 @@ package de.unima.sensor.features.model;
  * Supported inertial sensors.
  *
  * @author Timo Sztyler
- * @version 30.09.2016
+ * @version 29.11.2016
  */
 public enum SensorType {
-    ACCELERATION;
+    ACCELEROMETER, MAGNETOMETER, GYROSCOPE
 }

@@ -9,43 +9,75 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * Usage example how these libary has to be used to process acceleration data.
  *
  * @author Timo Sztyler
- * @version 10.10.2016
+ * @version 29.11.2016
  */
 public class UsageExample {
     public static void main(String[] args) throws Exception {
-        FeatureFactory ff = new FeatureFactory(SensorType.ACCELERATION);
+        long start = System.currentTimeMillis();
+
+        FeatureFactory ff = new FeatureFactory();
         ff.start();
 
-        File file = new File("data/example/acc_data.csv");
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        File fileAcc = new File("data/example/acc_walking_shin.csv");
+        try (BufferedReader br = new BufferedReader(new FileReader(fileAcc))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] fragments = line.split(",");
                 long     timestamp = Long.parseLong(fragments[1]);
                 float[]  values    = new float[]{Float.parseFloat(fragments[2]), Float.parseFloat(fragments[3]), Float.parseFloat(fragments[4])};
 
-                ff.addAccelerationData(timestamp, values, "walking", "shin", "mall", "shopping");
+                ff.addRecord(SensorType.ACCELEROMETER, timestamp, values, "walking", "shin", "mall", "shopping");
             }
         }
 
-        List<Window> result = new ArrayList<>();
+        File fileMag = new File("data/example/mag_walking_shin.csv");
+        try (BufferedReader br = new BufferedReader(new FileReader(fileMag))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] fragments = line.split(",");
+                long     timestamp = Long.parseLong(fragments[1]);
+                float[]  values    = new float[]{Float.parseFloat(fragments[2]), Float.parseFloat(fragments[3]), Float.parseFloat(fragments[4])};
+
+                ff.addRecord(SensorType.MAGNETOMETER, timestamp, values, "walking", "shin", "mall", "shopping");
+            }
+        }
+
+        File fileGyr = new File("data/example/gyr_walking_shin.csv");
+        try (BufferedReader br = new BufferedReader(new FileReader(fileGyr))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] fragments = line.split(",");
+                long     timestamp = Long.parseLong(fragments[1]);
+                float[]  values    = new float[]{Float.parseFloat(fragments[2]), Float.parseFloat(fragments[3]), Float.parseFloat(fragments[4])};
+
+                ff.addRecord(SensorType.GYROSCOPE, timestamp, values, "walking", "shin", "mall", "shopping");
+            }
+        }
+
+
+        NavigableMap<Long, Window> result = new TreeMap<>();
         do {
-            Thread.sleep(1000);
-            result.addAll(ff.getWindows());
+            result.putAll(ff.getWindows());
         } while (!ff.isIdle());
-        for (Window window : result) {
+
+        result.putAll(ff.getWindows());
+        for (Window window : result.values()) {
             System.out.println(window);
         }
 
-        String arffFile = ff.getWindowsAsARFF(0);
-        System.out.println(arffFile);
+        //String arffFile = ff.getWindowsAsARFF(0);
+        //System.out.println(arffFile);
 
         ff.stop();
         ff.clear();
+
+        System.out.println(System.currentTimeMillis()-start);
     }
 }

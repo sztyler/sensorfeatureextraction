@@ -1,6 +1,7 @@
 package de.unima.sensor.features;
 
 import de.unima.sensor.features.model.Features;
+import de.unima.sensor.features.model.SensorData;
 import de.unima.sensor.features.model.Window;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
  * This class covers several methods concerning type conversion.
  *
  * @author Timo Sztyler
- * @version 30.09.2016
+ * @version 24.11.2016
  */
 public class Utils {
     public static void sleep(int i) {
@@ -95,5 +96,15 @@ public class Utils {
             if (value >= mm[i] && value < mm[i + 1]) { return true; }
         }
         return false;
+    }
+
+    public static List<SensorData> deepCopy(List<SensorData> original) {
+        List<SensorData> clone = new ArrayList<>(original.size());
+
+        for (SensorData sd : original) {
+            clone.add(sd.clone());
+        }
+
+        return clone;
     }
 }

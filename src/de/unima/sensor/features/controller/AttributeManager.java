@@ -4,7 +4,6 @@ import de.unima.sensor.features.FactoryProperties;
 import de.unima.sensor.features.Utils;
 import de.unima.sensor.features.model.SensorData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,7 +11,7 @@ import java.util.List;
  * which has to be processed from the data center. Processed data is pushed back to the data center.
  *
  * @author Timo Sztyler
- * @version 30.09.2016
+ * @version 29.11.2016
  */
 public class AttributeManager implements Runnable {
     private long    timeStamp;
@@ -46,15 +45,14 @@ public class AttributeManager implements Runnable {
             this.timeStamp = tmpTime;
 
             // load data
-            List<SensorData> tmp  = dc.getRawData();
-            List<SensorData> copy = new ArrayList<>(tmp);   // TODO real copy necessary????
-            copy = tmp.subList(alreadyRead, tmp.size());
+            List<SensorData> data    = dc.getRawData();
+            List<SensorData> subData = data.subList(alreadyRead, data.size());
 
             // do job
-            parse(copy);
+            parse(subData);
 
             // job complete
-            this.alreadyRead += copy.size();
+            this.alreadyRead += subData.size();
 
             Utils.sleep(FactoryProperties.MANAGER_ATTRIBUTE_IDLE);
         }
