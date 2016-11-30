@@ -11,7 +11,7 @@ import java.util.List;
  * corresponding features.
  *
  * @author Timo Sztyler
- * @version 30.09.2016
+ * @version 30.11.2016
  */
 public class Attribute implements Comparable<Attribute> {
     private SensorType    sensor;
@@ -90,9 +90,9 @@ public class Attribute implements Comparable<Attribute> {
         }
 
         synchronized (this.valuesLock) {
-            times.addAll(this.times.subList(startPos, endPos));
-            values.addAll(this.values.subList(startPos, endPos));
-            gravities.addAll(this.gravities.subList(startPos, endPos));
+            times.addAll(this.times.subList(startPos, endPos > this.times.size() ? this.times.size() : endPos));
+            values.addAll(this.values.subList(startPos, endPos > this.values.size() ? this.values.size() : endPos));
+            gravities.addAll(this.gravities.subList(startPos, endPos > this.gravities.size() ? this.gravities.size() : endPos));
 
             return new Pair<>(times, new Pair<>(values, gravities));
         }

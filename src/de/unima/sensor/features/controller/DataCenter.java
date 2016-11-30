@@ -15,7 +15,7 @@ import java.util.Map.Entry;
  * the attribute manager and window manager push their processed data to this data center.
  *
  * @author Timo Sztyler
- * @version 29.11.2016
+ * @version 30.11.2016
  */
 public class DataCenter {
     private static DataCenter DATACENTER = null;
@@ -134,6 +134,10 @@ public class DataCenter {
 
 
     public String[] getLabels(long key) {
+        if (this.labels.floorKey(key) == null) {
+            System.out.println(key);
+        }
+
         long floorKey = this.labels.floorKey(key);
 
         return this.labels.get(floorKey);
@@ -223,6 +227,10 @@ public class DataCenter {
         this.requiredTimeWithSleep += time;
     }
 
+
+    public void increaseWindowsLastModified() {
+        windowsLastModified++;
+    }
 
     public void clear() {
         DATACENTER = null;

@@ -10,7 +10,7 @@ import java.util.*;
  * acceleration data, computed features, and label.
  *
  * @author Timo Sztyler
- * @version 24.11.2016
+ * @version 30.11.2016
  */
 public class Window implements Comparable<Window> {
     private int                             id;
@@ -38,11 +38,16 @@ public class Window implements Comparable<Window> {
         }
 
         for (SensorType sensor : data.keySet()) {
-            this.data.get(sensor).addAll(getData(sensor));
+            Set<Attribute> attrs      = getData(sensor);
+            Set<Attribute> sensorData = this.data.get(sensor);
+            for (Attribute attr : attrs) {
+                sensorData.remove(attr);
+                sensorData.add(attr);
+            }
         }
 
         // calculation of the features
-        this.features = new Features(this.id, this.data.get(this.data.entrySet().iterator().next().getKey()));   // TODO
+        // this.features = new Features(this.id, this.data.get(this.data.entrySet().iterator().next().getKey()));   // TODO
     }
 
 
@@ -109,14 +114,15 @@ public class Window implements Comparable<Window> {
         if (endTimestamp == null) {
             return result;
         }
-        int  endPosition  = -1;
+
+        int endPosition = -1;
         if (!(endTimestamp < (this.end - FactoryProperties.WINDOW_SIZE))) {
             endPosition = dc.getTimestamp(sensor, endTimestamp).getValue();
         }
 
         Set<Attribute> attrs = dc.getAttributes(sensor);
         for (Attribute attr : attrs) {
-            Pair<List<Long>, Pair<List<Double>, List<Double>>> entries = attr.getEntries(startPosition, endPosition);
+            Pair<List<Long>, Pair<List<Double>, List<Double>>> entries = attr.getEntries(startPosition, (endTimestamp < this.end) ? (endPosition + 1) : endPosition);
 
             Attribute newAttr = new Attribute(sensor, attr.getAttribute(), false);
             newAttr.addValues(entries.getLeft(), entries.getRight().getLeft(), entries.getRight().getRight());
@@ -160,7 +166,7 @@ public class Window implements Comparable<Window> {
         for (SensorType sensorType : this.data.keySet()) {
             s += sensorType.toString().substring(0, 3) + ": " + (this.getData(sensorType).size() > 0 ? this.getData(sensorType).iterator().next().getSize() : "0") + ", ";
         }
-        if(this.data.isEmpty()) {
+        if (this.data.isEmpty()) {
             s += "no data available, ";
         }
         s = s.substring(0, s.length() - 2) + "] | " + Arrays.toString(this.labels) + " | (" + this.getStart() + " - " + this.getEnd() + ") | " + System.lineSeparator();

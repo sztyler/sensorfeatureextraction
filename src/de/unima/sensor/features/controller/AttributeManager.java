@@ -66,12 +66,12 @@ public class AttributeManager implements Runnable {
 
         for (SensorData sd : data) {
             float[] values = sd.getValues();
+
+            dc.addLabels(sd.getTimestamp(), sd.getLabels());
+            dc.addAttribute(sd.getSensor(), "attr_time", sd.getTimestamp(), sd.getTimestamp());
             for (int i = 0; i < values.length; i++) {
                 dc.addAttribute(sd.getSensor(), String.valueOf(i), sd.getTimestamp(), values[i]);
             }
-
-            dc.addAttribute(sd.getSensor(), "attr_time", sd.getTimestamp(), sd.getTimestamp());
-            dc.addLabels(sd.getTimestamp(), sd.getLabels());
         }
     }
 
