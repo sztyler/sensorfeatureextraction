@@ -89,7 +89,7 @@ public class Attribute implements Comparable<Attribute> {
             return new Pair<>(times, new Pair<>(values, gravities));
         }
 
-        synchronized (this.valuesLock) {
+        synchronized (this.valuesLock) { // TODO end < start
             times.addAll(this.times.subList(startPos, endPos > this.times.size() ? this.times.size() : endPos));
             values.addAll(this.values.subList(startPos, endPos > this.values.size() ? this.values.size() : endPos));
             gravities.addAll(this.gravities.subList(startPos, endPos > this.gravities.size() ? this.gravities.size() : endPos));

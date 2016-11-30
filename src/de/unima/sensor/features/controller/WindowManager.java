@@ -5,6 +5,9 @@ import de.unima.sensor.features.model.Attribute;
 import de.unima.sensor.features.model.SensorType;
 import de.unima.sensor.features.model.Window;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,6 +40,8 @@ public class WindowManager implements Runnable {
         DataCenter dc    = DataCenter.getInstance();
         long       shift = (long) (FactoryProperties.WINDOW_SIZE * (FactoryProperties.WINDOW_OVERLAP ? FactoryProperties.WINDOW_OVERLAP_SIZE : 1));
 
+        Map<SensorType, Set<Long>> blacklist = new HashMap<>();
+
         while (this.isRunning) {
             for (int i = 0; i < SensorType.values().length; i++) {
                 SensorType     sensorType = SensorType.values()[i];
@@ -66,7 +71,7 @@ public class WindowManager implements Runnable {
                     this.windowBackward--;
                     dc.increaseWindowsLastModified();
                 } else if (windowStart == null || (readingProgress[i] == windowEnd && windowEnd <= attrAbsoluteEnd)) { // create window after the last one
-                    if(windowStart != null) {
+                    if (windowStart != null) {
                         dc.getWindows().lastEntry().getValue().build();
                     }
 
@@ -95,6 +100,20 @@ public class WindowManager implements Runnable {
 
                     this.windowForward++;
                     dc.increaseWindowsLastModified();
+                } else { // will be entered if no new data arrive -> refresh last window
+                    if (dc.getWindows() == null || dc.getWindows().size() == 0) {
+                        continue;
+                    }
+
+                    if (!blacklist.containsKey(sensorType)) {
+                        blacklist.put(sensorType, new HashSet<Long>());
+                    }
+
+                    if (!blacklist.get(sensorType).contains(attrAbsoluteEnd)) {
+                        blacklist.get(sensorType).add(attrAbsoluteEnd);
+                        dc.getWindows().lastEntry().getValue().build();
+                        dc.increaseWindowsLastModified();
+                    }
                 }
             }
         }
