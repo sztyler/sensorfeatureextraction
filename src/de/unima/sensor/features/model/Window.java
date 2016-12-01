@@ -31,26 +31,6 @@ public class Window implements Comparable<Window> {
     }
 
 
-    public void build() {
-        if (this.data.size() == 0) {
-            System.err.println("Error! Build not possible! First, you have to use 'addSensor'.");
-            return;
-        }
-
-        for (SensorType sensor : data.keySet()) {
-            Set<Attribute> attrs      = getData(sensor);
-            Set<Attribute> sensorData = this.data.get(sensor);
-            for (Attribute attr : attrs) {
-                sensorData.remove(attr);
-                sensorData.add(attr);
-            }
-        }
-
-        // calculation of the features
-        // this.features = new Features(this.id, this.data.get(this.data.entrySet().iterator().next().getKey()));   // TODO
-    }
-
-
     public void addSensor(SensorType sensor) {
         if (this.data.containsKey(sensor)) { return; }
 
@@ -79,6 +59,7 @@ public class Window implements Comparable<Window> {
 
 
     public Set<Attribute> getEntries(SensorType sensor) {
+        refresh();
         return this.data.get(sensor);
     }
 
@@ -131,6 +112,26 @@ public class Window implements Comparable<Window> {
         }
 
         return result;
+    }
+
+
+    private void refresh() {
+        if (this.data.size() == 0) {
+            System.err.println("Error! Build not possible! First, you have to use 'addSensor'.");
+            return;
+        }
+
+        for (SensorType sensor : data.keySet()) {
+            Set<Attribute> attrs      = getData(sensor);
+            Set<Attribute> sensorData = this.data.get(sensor);
+            for (Attribute attr : attrs) {
+                sensorData.remove(attr);
+                sensorData.add(attr);
+            }
+        }
+
+        // calculation of the features
+        // this.features = new Features(this.id, this.data.get(this.data.entrySet().iterator().next().getKey()));   // TODO
     }
 
 

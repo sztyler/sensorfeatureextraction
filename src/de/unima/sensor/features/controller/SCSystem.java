@@ -8,7 +8,7 @@ package de.unima.sensor.features.controller;
  * @version 30.09.2016
  */
 public class SCSystem {
-    private static SCSystem SCSYSTEM;
+    private static SCSystem SCSYSTEM = null;
 
     // private DataManager dataManager;
     private AttributeManager attributeManager;
@@ -56,7 +56,7 @@ public class SCSystem {
     }
 
 
-    public void clear() {
+    public static void clear() {
         SCSYSTEM = null;
     }
 }

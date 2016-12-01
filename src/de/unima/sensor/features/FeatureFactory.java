@@ -41,9 +41,12 @@ public class FeatureFactory {
     }
 
     public NavigableMap<Long, Window> getWindows() {
-        NavigableMap<Long, Window> windows    = dc.getWindows();
         NavigableMap<Long, Window> newWindows = new TreeMap<>();
+        if (dc == null) {
+            return newWindows;
+        }
 
+        NavigableMap<Long, Window> windows = dc.getWindows();
         if (windows.size() == 0) {
             return newWindows;
         }
@@ -75,6 +78,7 @@ public class FeatureFactory {
 
 
     public void start() {
+        this.clear();
         this.sc = SCSystem.getInstance();
         this.dc = DataCenter.getInstance();
         this.running = true;
@@ -88,8 +92,8 @@ public class FeatureFactory {
 
 
     public void clear() {
-        sc.clear();
-        dc.clear();
+        SCSystem.clear();
+        DataCenter.clear();
     }
 
 

@@ -232,7 +232,7 @@ public class DataCenter {
         windowsLastModified++;
     }
 
-    public void clear() {
+    public static void clear() {
         DATACENTER = null;
     }
 
