@@ -2,6 +2,7 @@ package de.unima.sensor.features;
 
 import de.unima.sensor.features.controller.DataCenter;
 import de.unima.sensor.features.controller.SCSystem;
+import de.unima.sensor.features.model.Features;
 import de.unima.sensor.features.model.SensorData;
 import de.unima.sensor.features.model.SensorType;
 import de.unima.sensor.features.model.Window;
@@ -151,7 +152,7 @@ public class FeatureFactory {
         String   csvFile = getWindowsAsCSV();
         String[] lines   = csvFile.split(System.lineSeparator());
 
-        List<Window> windows = new ArrayList<>(dc.getWindows().values()); // TODO
+        List<Window> windows = new ArrayList<>(this.getAllWindows().values());
         if (windows.size() == 0) {
             return "";
         }
@@ -193,26 +194,55 @@ public class FeatureFactory {
 
     public String getWindowsAsCSV() {
         StringBuilder sb      = new StringBuilder();
-        List<Window>  windows = new ArrayList<>(dc.getWindows().values()); // TODO
+        List<Window>  windows = new ArrayList<>(this.getAllWindows().values());
 
-        if (windows.size() > 0) {
-            sb.append(windows.get(0).getFeatures().getHeader()).append(", ");
-
-            for (int i = 0; i < windows.get(0).getLabels().length; i++) {
-                sb.append("label_").append(i).append(", ");
-            }
-
-            sb.setLength(sb.length() - 1);
-            sb.append(System.lineSeparator());
+        if (windows.size() == 0) {
+            return "";
         }
 
+        // 1. Detect available/used sensor types and load headers
+        NavigableMap<SensorType, String> sensorTypeHeaders = new TreeMap<>();
         for (Window window : windows) {
-            String targetClasses = Arrays.toString(window.getLabels()).replace("[", "").replace("]", "").replace(" ", "");
-            sb.append(window.getFeatures().toString().replace(";", ",")).append(",").append(targetClasses).append(System.lineSeparator());
+            for (SensorType sensorType : SensorType.values()) {
+                window.getEntries(sensorType); // force refresh
+                Features feature = window.getFeatures(sensorType);
+                if (feature != null && !sensorTypeHeaders.containsKey(sensorType)) {
+                    sensorTypeHeaders.put(sensorType, feature.getHeader());
+                }
+            }
         }
 
-        if (sb.length() > 0) {
-            sb.delete((sb.length() - (System.lineSeparator()).length()), sb.length());
+        // 2. Build Header
+        for (SensorType sensorType : sensorTypeHeaders.keySet()) {
+            String   header   = sensorTypeHeaders.get(sensorType);
+            String[] elements = header.split(",");
+            for (String element : elements) {
+                sb.append(sensorType.toString().substring(0, 3).toLowerCase()).append("_").append(element.trim()).append(",");
+            }
+        }
+        for (int i = 0; i < windows.get(0).getLabels().length; i++) {
+            sb.append("label_").append(i).append(",");
+        }
+        sb.setLength(sb.length() - 1);
+        sb.append(System.lineSeparator());
+
+        // 3. Build File
+        for (Window window : windows) {
+            for (SensorType sensorType : sensorTypeHeaders.keySet()) {
+                Features features = window.getFeatures(sensorType);
+
+                if (features != null) {
+                    sb.append(features.toString().replace(";", ",")).append(",");
+                } else {
+                    sb.append(window.getId()).append(",");
+                    int numFeatures = sensorTypeHeaders.get(sensorType).split(", ").length;
+                    for (int i = 0; i < numFeatures - 1; i++) {
+                        sb.append("0.00000,");
+                    }
+                }
+            }
+            String targetClasses = Arrays.toString(window.getLabels()).replace("[", "").replace("]", "").replace(" ", "");
+            sb.append(targetClasses).append(System.lineSeparator());
         }
 
         return sb.toString();

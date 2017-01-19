@@ -10,7 +10,7 @@ import java.util.*;
  * acceleration data, computed features, and label.
  *
  * @author Timo Sztyler
- * @version 30.11.2016
+ * @version 19.01.2017
  */
 public class Window implements Comparable<Window> {
     private int                             id;
@@ -18,7 +18,7 @@ public class Window implements Comparable<Window> {
     private long                            end;
     private String[]                        labels;
     private Map<SensorType, Set<Attribute>> data;                // sensor, attribute, and values of this window
-    private Features                        features;
+    private Map<SensorType, Features>       features;
 
 
     public Window(int id, long start, long end, String... labels) {
@@ -27,7 +27,7 @@ public class Window implements Comparable<Window> {
         this.end = end;
         this.labels = labels;
         this.data = new HashMap<>();
-        this.features = null;
+        this.features = new HashMap<>();
     }
 
 
@@ -35,6 +35,7 @@ public class Window implements Comparable<Window> {
         if (this.data.containsKey(sensor)) { return; }
 
         this.data.put(sensor, new HashSet<Attribute>());
+        this.features.put(sensor, null);
     }
 
 
@@ -64,8 +65,8 @@ public class Window implements Comparable<Window> {
     }
 
 
-    public Features getFeatures() {
-        return this.features;
+    public Features getFeatures(SensorType sensorType) {
+        return this.features.get(sensorType);
     }
 
 
@@ -117,7 +118,7 @@ public class Window implements Comparable<Window> {
 
     private void refresh() {
         if (this.data.size() == 0) {
-            System.err.println("Error! Build not possible! First, you have to use 'addSensor'.");
+            System.out.println("Warning! Build not possible! No Data available! First, you have to use 'addSensor'.");
             return;
         }
 
@@ -128,10 +129,9 @@ public class Window implements Comparable<Window> {
                 sensorData.remove(attr);
                 sensorData.add(attr);
             }
-        }
 
-        // calculation of the features
-        // this.features = new Features(this.id, this.data.get(this.data.entrySet().iterator().next().getKey()));   // TODO
+            this.features.put(sensor, new Features(this.id, attrs));
+        }
     }
 
 

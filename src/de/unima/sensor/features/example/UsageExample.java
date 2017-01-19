@@ -70,8 +70,11 @@ public class UsageExample {
             System.out.println(window);
         }
 
-        //String arffFile = ff.getWindowsAsARFF(0);
-        //System.out.println(arffFile);
+        String csvFile = ff.getWindowsAsCSV();
+      //  System.out.println(csvFile);
+
+        String arffFile = ff.getWindowsAsARFF(0);   // 0 = walking, 1 = shin, 2 = mall, 3 = shopping
+      //  System.out.println(arffFile);
 
         ff.stop();
         ff.clear();

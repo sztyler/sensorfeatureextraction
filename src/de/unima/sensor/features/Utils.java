@@ -60,12 +60,13 @@ public class Utils {
 
 
     public static boolean isWindowEmpty(Window w) {
-        Features feature = w.getFeatures();
-        String   line    = feature.toString();
-        String   values  = line.substring(line.indexOf(";"), line.lastIndexOf(";"));
-        values = values.replace(";", "").replace("0.00000", "");
+        //Features feature = w.getFeatures();
+        //String   line    = feature.toString();
+        //String   values  = line.substring(line.indexOf(";"), line.lastIndexOf(";"));
+        //values = values.replace(";", "").replace("0.00000", "");
 
-        return values.isEmpty();
+        //return values.isEmpty();
+        return false;
     }
 
 

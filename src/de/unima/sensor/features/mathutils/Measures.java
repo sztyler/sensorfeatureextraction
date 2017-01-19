@@ -10,7 +10,7 @@ import java.util.*;
  * This class covers all function that are necessary to compute the individual features for each window.
  *
  * @author Timo Sztyler
- * @version 29.11.2016
+ * @version 19.01.2017
  */
 public class Measures {
     // time-domain
@@ -169,7 +169,11 @@ public class Measures {
         }
         kurtosis /= (double) (values.length);
 
-        return kurtosis;    // MaÃŸzahl fÃ¼r die Steilheit bzw. â€žSpitzigkeitâ€œ einer HÃ¤ufigkeitsverteilung
+        if(Double.isNaN(kurtosis)) {
+            return 0.0d;
+        }
+
+        return kurtosis;    // Maßzahl für die Steilheit bzw. Spitzigkeitâ€œ einer Häufigkeitsverteilung
     }
 
 
@@ -200,6 +204,9 @@ public class Measures {
 
         cc = (sumAB) / (Math.sqrt(sumAsq * sumBsq));
 
+        if (Double.isNaN(cc)) {
+            return 0.0d;
+        }
         // Wenn der Wert der einen Variablen, z.B. von X um eine Einheit ansteigt, dann verÃ¤ndert sich der Wert der anderen Variablen, also Y, um Ï� Einheiten. Je nach dem Vorzeichen geht der Wert von Y um Ï� Einheiten nach oben oder nach unten
         // http://www.uni-wuerzburg.de/fileadmin/10040800/user_upload/hain/SPSS/Abhaengigkeit.pdf
 
@@ -218,6 +225,10 @@ public class Measures {
         }
         gravityMean /= (double) values.length;
 
+        if (Double.isNaN(gravityMean)) {
+            return 0.0d;
+        }
+
         return gravityMean;
     }
 
@@ -235,7 +246,7 @@ public class Measures {
 
         double c = Math.sqrt(a * a + b * b);
 
-        if (a == 0.0d || c == 0.0d) { return 0.0d; }
+        if (a == 0.0d || c == 0.0d || Double.isNaN(c)) { return 0.0d; }
 
         double orientation = (180.0d / Math.PI) * Math.acos((a * a + c * c - b * b) / (2 * a * c));
 
