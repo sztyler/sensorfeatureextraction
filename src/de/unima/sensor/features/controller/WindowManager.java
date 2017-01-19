@@ -58,6 +58,7 @@ class WindowManager implements Runnable {
 
                 Long windowStart = dc.getWindows().floorKey(readingProgress[i]);
                 Long windowEnd   = windowStart != null ? (windowStart + FactoryProperties.WINDOW_SIZE) : null;
+                //System.out.println(Arrays.toString(readingProgress)+ " -- " + dc.getWindows().size()+" -- "+windowStart);
 
                 if (windowStart == null && dc.getWindows().size() > 0 && attrAbsoluteStart < dc.getWindows().firstKey()) {   // create empty window before the first one
                     long firstWindowStart = dc.getWindows().firstKey();
@@ -69,7 +70,7 @@ class WindowManager implements Runnable {
 
                     this.windowBackward--;
                     dc.increaseWindowsLastModified();
-                } else if (windowStart == null || (readingProgress[i] == windowEnd && windowEnd <= attrAbsoluteEnd)) { // create window after the last one
+                } else if (windowStart == null || (readingProgress[i] == (windowEnd) && windowEnd <= attrAbsoluteEnd)) { // create window after the last one
                     long   newWindowStart = windowEnd == null ? attrAbsoluteStart : readingProgress[i] - shift;
                     long   newWindowEnd   = newWindowStart + FactoryProperties.WINDOW_SIZE;
                     Window window         = new Window(this.windowForward, newWindowStart, newWindowEnd, labels);
@@ -84,6 +85,9 @@ class WindowManager implements Runnable {
                     window.addSensor(sensorType);
 
                     readingProgress[i] = windowEnd;// < attrAbsoluteEnd ? windowEnd : attrAbsoluteEnd;
+                    if (!windowStart.equals(dc.getWindows().floorKey(readingProgress[i] - shift))) {    // next windows already exists and overlap is active
+                        readingProgress[i] -= shift;
+                    }
                     dc.increaseWindowsLastModified();
                 } else if (attrAbsoluteStart > windowEnd) {   // create empty window after the last one
                     long   newWindowStart = windowEnd - shift;

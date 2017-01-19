@@ -2,11 +2,13 @@ package de.unima.sensor.features;
 
 import de.unima.sensor.features.model.Features;
 import de.unima.sensor.features.model.SensorData;
+import de.unima.sensor.features.model.SensorType;
 import de.unima.sensor.features.model.Window;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class covers several methods concerning type conversion.
@@ -60,13 +62,19 @@ public class Utils {
 
 
     public static boolean isWindowEmpty(Window w) {
-        //Features feature = w.getFeatures();
-        //String   line    = feature.toString();
-        //String   values  = line.substring(line.indexOf(";"), line.lastIndexOf(";"));
-        //values = values.replace(";", "").replace("0.00000", "");
+        boolean result = true;
 
-        //return values.isEmpty();
-        return false;
+        Set<SensorType> sensorTypes = w.getSensorTypes();
+        for (SensorType sensorType : sensorTypes) {
+            Features feature = w.getFeatures(sensorType);
+            String   line    = feature.toString();
+            String   values  = line.substring(line.indexOf(";"), line.lastIndexOf(";"));
+            values = values.replace(";", "").replace("0.00000", "");
+
+            result = result && values.isEmpty();
+        }
+
+        return result;
     }
 
 
